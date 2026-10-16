@@ -1,0 +1,7 @@
+# Ignore development scratch and test automation folder
+scratch/
+
+# Ignore system and IDE files
+.DS_Store
+Thumbs.db
+*.log

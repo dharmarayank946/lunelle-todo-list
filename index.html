@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lunelle ✧ - A dreamy, editorial daily planner and productivity sanctuary. Make space for what matters.">
+  <title>Lunelle ✧ — Make space for what matters</title>
+
+  <!-- Inline SVG Favicon with delicate starburst -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2226%22 fill=%22%23F0EBFF%22/><text y=%22.75em%22 x=%2250%25%22 text-anchor=%22middle%22 font-size=%2260%22 fill=%22%238F74C7%22 font-family=%22serif%22>✧</text></svg>">
+
+  <!-- Google Fonts: Cormorant Garamond (Editorial Serif) & Plus Jakarta Sans (Modern Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-container">
+    
+    <!-- ====================================================================
+         VIEW 1: AUTHENTICATION CONTAINER (LOGIN & REGISTRATION)
+         ==================================================================== -->
+    <section class="auth-card" id="auth-container" aria-label="Demo Authentication">
+      
+      <!-- Brand Header -->
+      <div class="auth-header">
+        <div class="brand-row">
+          <span class="brand-starburst" aria-hidden="true">✧</span>
+          <h1 class="brand-title">Lunelle</h1>
+        </div>
+        <p class="auth-subtitle">Make space for what matters.</p>
+      </div>
+
+      <!-- Tab Switcher (Login / Register) - Two Clearly Separated Tabs/Buttons -->
+      <div class="auth-tabs" role="tablist" aria-label="Authentication Options">
+        <button type="button" class="auth-tab-btn active" id="tab-login" role="tab" aria-selected="true" aria-controls="login-form-view">
+          <span class="tab-icon" aria-hidden="true">✧</span> Log In
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-register" role="tab" aria-selected="false" aria-controls="register-form-view">
+          <span class="tab-icon" aria-hidden="true">✦</span> Register
+        </button>
+      </div>
+
+      <!-- Auth Error / Success Alert -->
+      <div id="auth-alert" class="auth-alert hidden" role="alert" aria-live="polite"></div>
+
+      <!-- --- LOGIN FORM VIEW --- -->
+      <div class="auth-form-view" id="login-form-view" role="tabpanel" aria-labelledby="tab-login">
+        <div class="auth-form-header">
+          <h2 class="auth-form-title">Welcome Back ✧</h2>
+          <p class="auth-form-subtitle">Enter your sanctuary of daily focus.</p>
+        </div>
+
+        <form id="login-form" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="login-username" class="form-label">Username or Email</label>
+            <input 
+              type="text" 
+              id="login-username" 
+              class="form-input" 
+              placeholder="e.g. student or alex" 
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="login-password" class="form-label">Password</label>
+            <div class="password-input-wrapper">
+              <input 
+                type="password" 
+                id="login-password" 
+                class="form-input password-input" 
+                placeholder="Enter your password" 
+                autocomplete="current-password"
+                required
+              >
+              <button 
+                type="button" 
+                class="password-toggle-btn" 
+                id="toggle-login-password" 
+                aria-label="Show password" 
+                aria-pressed="false"
+                title="Show password"
+              >
+                <span class="toggle-icon" aria-hidden="true">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-login" class="btn-primary auth-submit-btn">
+            <span>Log In to Lunelle ✧</span>
+          </button>
+        </form>
+
+        <p class="auth-switch-text">
+          Don't have an account yet? 
+          <button type="button" class="link-btn" id="switch-to-register">Create account</button>
+        </p>
+      </div>
+
+      <!-- --- REGISTER FORM VIEW --- -->
+      <div class="auth-form-view hidden" id="register-form-view" role="tabpanel" aria-labelledby="tab-register">
+        <div class="auth-form-header">
+          <h2 class="auth-form-title">Begin with Lunelle ✧</h2>
+          <p class="auth-form-subtitle">Make space for what matters today.</p>
+        </div>
+
+        <form id="register-form" class="auth-form" novalidate>
+          <div class="form-group">
+            <label for="register-name" class="form-label">Full Name</label>
+            <input 
+              type="text" 
+              id="register-name" 
+              class="form-input" 
+              placeholder="e.g. Maya Lin" 
+              autocomplete="name"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="register-username" class="form-label">Username or Email</label>
+            <input 
+              type="text" 
+              id="register-username" 
+              class="form-input" 
+              placeholder="Choose a username or email" 
+              autocomplete="username"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="register-password" class="form-label">Password</label>
+            <div class="password-input-wrapper">
+              <input 
+                type="password" 
+                id="register-password" 
+                class="form-input password-input" 
+                placeholder="Choose a password (min 4 chars)" 
+                autocomplete="new-password"
+                required
+              >
+              <button 
+                type="button" 
+                class="password-toggle-btn" 
+                id="toggle-register-password" 
+                aria-label="Show password" 
+                aria-pressed="false"
+                title="Show password"
+              >
+                <span class="toggle-icon" aria-hidden="true">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="register-confirm" class="form-label">Confirm Password</label>
+            <div class="password-input-wrapper">
+              <input 
+                type="password" 
+                id="register-confirm" 
+                class="form-input password-input" 
+                placeholder="Re-enter your password" 
+                autocomplete="new-password"
+                required
+              >
+              <button 
+                type="button" 
+                class="password-toggle-btn" 
+                id="toggle-register-confirm" 
+                aria-label="Show password" 
+                aria-pressed="false"
+                title="Show password"
+              >
+                <span class="toggle-icon" aria-hidden="true">👁️</span>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-register" class="btn-primary auth-submit-btn">
+            <span>Create Account ✧</span>
+          </button>
+        </form>
+
+        <p class="auth-switch-text">
+          Already have an account? 
+          <button type="button" class="link-btn" id="switch-to-login">Back to Log In</button>
+        </p>
+      </div>
+
+    </section>
+
+
+    <!-- ====================================================================
+         VIEW 2: MULTI-VIEW PRODUCTIVITY APP SHELL (ACTIVE AFTER LOGIN)
+         ==================================================================== -->
+    <div class="app-container hidden" id="app-container" role="application" aria-label="Lunelle Workspace">
+      
+      <!-- DESKTOP / TABLET SIDEBAR NAVIGATION -->
+      <aside class="app-sidebar" id="app-sidebar" aria-label="Sidebar navigation">
+        <div class="sidebar-brand">
+          <span class="brand-starburst" aria-hidden="true">✧</span>
+          <span class="sidebar-brand-title">Lunelle</span>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main Navigation">
+          <button type="button" class="nav-item-btn active" data-view="dashboard" id="nav-btn-dashboard" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">✦</span>
+            <span class="nav-label">Dashboard</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-view="tasks" id="nav-btn-tasks">
+            <span class="nav-icon" aria-hidden="true">✧</span>
+            <span class="nav-label">My Tasks</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-view="calendar" id="nav-btn-calendar">
+            <span class="nav-icon" aria-hidden="true">📅</span>
+            <span class="nav-label">Calendar</span>
+          </button>
+          <button type="button" class="nav-item-btn" data-view="settings" id="nav-btn-settings">
+            <span class="nav-icon" aria-hidden="true">⚙️</span>
+            <span class="nav-label">Settings</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-user-footer">
+          <div class="sidebar-user-info">
+            <span class="user-avatar" aria-hidden="true">👤</span>
+            <div class="user-details">
+              <span class="user-name" id="user-display-name">User</span>
+              <span class="user-handle" id="user-display-handle">@student</span>
+            </div>
+          </div>
+          <button type="button" id="btn-sidebar-logout" class="btn-sidebar-logout" title="Log out of Lunelle" aria-label="Log Out">
+            <span aria-hidden="true">🚪</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN APP CONTENT AREA -->
+      <main class="app-main" id="app-main">
+        
+        <!-- App Top Navigation Bar -->
+        <header class="app-top-bar">
+          <div class="top-bar-left">
+            <div class="mobile-brand-pill">
+              <span class="brand-starburst-sm" aria-hidden="true">✧</span>
+              <span class="mobile-brand-text">Lunelle</span>
+            </div>
+            <h1 class="page-main-title" id="current-view-title">Dashboard</h1>
+          </div>
+          <div class="top-bar-right">
+            <span class="date-badge" id="current-date-badge" aria-live="polite">Today's Date</span>
+            <button type="button" id="btn-top-logout" class="btn-top-logout" aria-label="Log Out of Lunelle">
+              <span aria-hidden="true">🚪</span> <span class="logout-text">Log Out</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- VIEW 1: DASHBOARD -->
+        <section class="content-view active" id="view-dashboard" aria-label="Dashboard Overview">
+          
+          <!-- Welcome Hero Banner -->
+          <div class="dashboard-hero-card">
+            <div class="hero-text-content">
+              <span class="greeting-badge" id="greeting-badge">
+                <span class="sparkle">✧</span>
+                <span id="greeting-text">A serene moment to begin ✧</span>
+              </span>
+              <h2 class="hero-greeting" id="hero-user-greeting">Welcome back ✧</h2>
+              <p class="hero-quote">Make space for what matters. Breathe, focus, and follow your gentle rhythm ✧</p>
+            </div>
+            <div class="hero-decorative-icon" aria-hidden="true">✧</div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="dash-stats-grid">
+            <div class="dash-stat-card total-card">
+              <div class="dash-stat-icon" aria-hidden="true">✧</div>
+              <div class="dash-stat-body">
+                <span class="dash-stat-number" id="dash-total-count">0</span>
+                <span class="dash-stat-label">Total Goals</span>
+              </div>
+            </div>
+            <div class="dash-stat-card completed-card">
+              <div class="dash-stat-icon" aria-hidden="true">✓</div>
+              <div class="dash-stat-body">
+                <span class="dash-stat-number" id="dash-completed-count">0</span>
+                <span class="dash-stat-label">Completed</span>
+              </div>
+            </div>
+            <div class="dash-stat-card remaining-card">
+              <div class="dash-stat-icon" aria-hidden="true">⏳</div>
+              <div class="dash-stat-body">
+                <span class="dash-stat-number" id="dash-remaining-count">0</span>
+                <span class="dash-stat-label">Remaining</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Overview Card -->
+          <div class="dash-progress-card">
+            <div class="dash-progress-header">
+              <div class="dash-progress-title-group">
+                <h3 class="dash-section-title">Today's Flow</h3>
+                <span class="dash-progress-subtitle" id="dash-progress-caption">Keep up your gentle momentum</span>
+              </div>
+              <span class="dash-progress-percent" id="dash-progress-percentage">0%</span>
+            </div>
+            <div class="progress-track" role="progressbar" id="dash-progress-track" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Completion progress">
+              <div class="progress-fill" id="dash-progress-bar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Recent Tasks Preview Card -->
+          <div class="dash-recent-card">
+            <div class="dash-recent-header">
+              <h3 class="dash-section-title">Recent Focus Items ✧</h3>
+              <button type="button" class="btn-link-action" id="btn-go-to-tasks">
+                <span>View My Tasks</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
+            <ul class="dash-recent-list" id="dash-recent-list" role="list">
+              <!-- Rendered via JS -->
+            </ul>
+            <div class="dash-recent-empty hidden" id="dash-recent-empty">
+              <p>No recent tasks found. Set an intention above to see it here ✧</p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- VIEW 2: MY TASKS -->
+        <section class="content-view hidden" id="view-tasks" aria-label="My Tasks View">
+          
+          <div class="view-header-block">
+            <h2 class="view-section-heading">My Tasks ✧</h2>
+            <p class="view-section-desc">A quiet space to organize your priorities, daily goals, and intentions.</p>
+          </div>
+
+          <!-- Add Task Card -->
+          <div class="add-task-card">
+            <form id="task-form" class="task-form" novalidate>
+              <div class="task-form-row">
+                <div class="input-wrapper main-task-input-wrapper">
+                  <input 
+                    type="text" 
+                    id="task-input" 
+                    class="task-input" 
+                    placeholder="What would you like to focus on today?" 
+                    autocomplete="off"
+                    maxlength="200"
+                    aria-label="What would you like to focus on today?"
+                    required
+                  >
+                </div>
+                <div class="due-date-wrapper">
+                  <label for="task-due-date" class="due-date-label" title="Set due date (optional)">
+                    <span aria-hidden="true">📅</span>
+                    <input type="date" id="task-due-date" class="task-due-date-input" aria-label="Due date (optional)">
+                  </label>
+                </div>
+                <button type="submit" id="add-task-btn" class="btn-primary add-task-submit-btn" aria-label="Add Task to list">
+                  <span class="btn-icon" aria-hidden="true">✦</span>
+                  <span class="btn-text">Add Task</span>
+                </button>
+              </div>
+            </form>
+            <p id="input-error" class="input-error" role="alert" aria-live="polite"></p>
+          </div>
+
+          <!-- Task Controls Bar (Filters & Quick Progress) -->
+          <div class="task-controls-bar">
+            <div class="filters-group" role="tablist" aria-label="Filter tasks">
+              <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true">
+                All <span class="filter-count" id="count-all">0</span>
+              </button>
+              <button type="button" class="filter-btn" data-filter="active" role="tab" aria-selected="false">
+                Active <span class="filter-count" id="count-active">0</span>
+              </button>
+              <button type="button" class="filter-btn" data-filter="completed" role="tab" aria-selected="false">
+                Completed <span class="filter-count" id="count-completed">0</span>
+              </button>
+            </div>
+            <div class="task-controls-progress">
+              <span class="controls-progress-text" id="tasks-progress-text">0% completed</span>
+              <div class="controls-progress-track">
+                <div class="controls-progress-fill" id="tasks-progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Task List Section -->
+          <div class="task-list-container">
+            <ul id="task-list" class="task-list" role="list">
+              <!-- Dynamically populated by script.js -->
+            </ul>
+
+            <div id="empty-state" class="empty-state hidden" aria-live="polite">
+              <div class="empty-emoji" id="empty-emoji" aria-hidden="true">✧</div>
+              <h3 class="empty-title" id="empty-title">No tasks in your flow yet ✧</h3>
+              <p class="empty-text" id="empty-text">Add your first intention above and gently begin.</p>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- VIEW 3: CALENDAR -->
+        <section class="content-view hidden" id="view-calendar" aria-label="Calendar View">
+          
+          <div class="view-header-block">
+            <h2 class="view-section-heading">Calendar & Schedule ✧</h2>
+            <p class="view-section-desc">View tasks by date, plan ahead, and keep track of upcoming deadlines.</p>
+          </div>
+
+          <div class="calendar-layout-grid">
+            
+            <!-- Left / Main: Monthly Calendar Card -->
+            <div class="calendar-card">
+              <div class="calendar-header">
+                <div class="cal-nav-group">
+                  <button type="button" class="cal-nav-btn" id="cal-prev-btn" aria-label="Previous Month">
+                    <span aria-hidden="true">◀</span>
+                  </button>
+                  <h3 class="cal-month-title" id="cal-month-title">Month Year</h3>
+                  <button type="button" class="cal-nav-btn" id="cal-next-btn" aria-label="Next Month">
+                    <span aria-hidden="true">▶</span>
+                  </button>
+                </div>
+                <button type="button" class="cal-today-btn" id="cal-today-btn">Today</button>
+              </div>
+
+              <!-- Day of week headers -->
+              <div class="cal-weekdays-grid">
+                <span>Sun</span>
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+              </div>
+
+              <!-- Days Grid -->
+              <div class="cal-days-grid" id="cal-days-grid" role="grid" aria-label="Calendar Days">
+                <!-- Dynamically generated days -->
+              </div>
+            </div>
+
+            <!-- Right / Side: Selected Date Task List -->
+            <div class="calendar-side-card">
+              <div class="cal-side-header">
+                <span class="cal-side-icon" aria-hidden="true">✧</span>
+                <div class="cal-side-titles">
+                  <h3 class="cal-selected-date-heading" id="cal-selected-date-heading">Schedule for Today</h3>
+                  <span class="cal-selected-count" id="cal-selected-count">0 tasks scheduled</span>
+                </div>
+              </div>
+
+              <!-- Quick Add for Selected Date -->
+              <form id="cal-quick-add-form" class="cal-quick-add-form" novalidate>
+                <div class="cal-input-row">
+                  <input 
+                    type="text" 
+                    id="cal-quick-input" 
+                    class="cal-quick-input" 
+                    placeholder="Add focus item for this date..." 
+                    autocomplete="off"
+                    maxlength="200"
+                    required
+                  >
+                  <button type="submit" id="cal-quick-submit" class="btn-primary cal-quick-submit-btn" aria-label="Add task for this date">
+                    <span>✦ Add</span>
+                  </button>
+                </div>
+              </form>
+
+              <!-- Selected Date Tasks List -->
+              <div class="cal-tasks-container">
+                <ul class="cal-tasks-list" id="cal-tasks-list" role="list">
+                  <!-- Rendered via JS -->
+                </ul>
+                <div class="cal-empty-state" id="cal-empty-state">
+                  <span class="cal-empty-icon" aria-hidden="true">✧</span>
+                  <p class="cal-empty-text">No tasks scheduled for this date. Add one above to stay organized!</p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- VIEW 4: SETTINGS -->
+        <section class="content-view hidden" id="view-settings" aria-label="Settings View">
+          
+          <div class="view-header-block">
+            <h2 class="view-section-heading">Settings & Preferences ✧</h2>
+            <p class="view-section-desc">Personalize your palette, manage your profile, and curate your workspace.</p>
+          </div>
+
+          <div class="settings-grid">
+            
+            <!-- Profile Card -->
+            <div class="settings-card profile-card">
+              <h3 class="settings-card-title">User Profile ✧</h3>
+              <div class="profile-info-grid">
+                <div class="profile-info-row">
+                  <span class="profile-info-label">Full Name:</span>
+                  <span class="profile-info-val" id="settings-user-name">Emma Watson</span>
+                </div>
+                <div class="profile-info-row">
+                  <span class="profile-info-label">Username:</span>
+                  <span class="profile-info-val" id="settings-user-username">@student</span>
+                </div>
+                <div class="profile-info-row">
+                  <span class="profile-info-label">User Identifier:</span>
+                  <span class="profile-info-val code" id="settings-user-id">demo_user_student</span>
+                </div>
+                <div class="profile-info-row">
+                  <span class="profile-info-label">Storage Key:</span>
+                  <span class="profile-info-val code" id="settings-storage-key">taskflow_tasks_demo_user_student</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Theme Preference Card -->
+            <div class="settings-card theme-card">
+              <h3 class="settings-card-title">Aesthetic Theme Palette ✧</h3>
+              <p class="settings-card-desc">Choose your preferred soothing pastel color scheme. Your choice is automatically remembered.</p>
+              
+              <div class="theme-options-grid">
+                <button type="button" class="theme-option-btn active" data-theme="lavender" id="theme-btn-lavender">
+                  <span class="theme-preview-swatch swatch-lavender" aria-hidden="true"></span>
+                  <div class="theme-option-info">
+                    <span class="theme-name">Pastel Lavender</span>
+                    <span class="theme-desc">Lilac & warm cream (Default Lunelle)</span>
+                  </div>
+                </button>
+
+                <button type="button" class="theme-option-btn" data-theme="sage" id="theme-btn-sage">
+                  <span class="theme-preview-swatch swatch-sage" aria-hidden="true"></span>
+                  <div class="theme-option-info">
+                    <span class="theme-name">Pastel Sage</span>
+                    <span class="theme-desc">Earthy mint & soft greens</span>
+                  </div>
+                </button>
+
+                <button type="button" class="theme-option-btn" data-theme="peach" id="theme-btn-peach">
+                  <span class="theme-preview-swatch swatch-peach" aria-hidden="true"></span>
+                  <div class="theme-option-info">
+                    <span class="theme-name">Pastel Peach</span>
+                    <span class="theme-desc">Warm apricot & soft cream</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Data & Storage Card -->
+            <div class="settings-card data-card">
+              <h3 class="settings-card-title">Local Workspace Data ✧</h3>
+              <p class="settings-card-desc">All tasks and demo accounts are saved purely inside this browser's native localStorage.</p>
+              
+              <div class="data-stats-row">
+                <span id="settings-task-count-text">You have 0 tasks stored locally.</span>
+                <button type="button" class="btn-secondary" id="btn-reset-starter-tasks">
+                  <span>🔄 Reset Starter Tasks</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Security & Education Note Card -->
+            <div class="settings-card info-card">
+              <h3 class="settings-card-title">Private Client Architecture ✧</h3>
+              <p class="settings-card-desc">
+                Lunelle operates 100% on the client side without servers, cloud databases, or tracking. Data is private to this browser and profile.
+              </p>
+            </div>
+
+            <!-- Logout Action Card -->
+            <div class="settings-card logout-card">
+              <h3 class="settings-card-title">Account Session ✧</h3>
+              <p class="settings-card-desc">End your active session and return to the login screen. Your tasks will remain saved.</p>
+              <button type="button" class="btn-logout-prominent" id="settings-logout-btn">
+                <span aria-hidden="true">🚪</span> Log Out of Lunelle ✧
+              </button>
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- MOBILE BOTTOM NAVIGATION BAR -->
+      <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Navigation">
+        <button type="button" class="mobile-nav-btn active" data-view="dashboard" id="mob-nav-dashboard" aria-label="Dashboard">
+          <span class="mob-nav-icon" aria-hidden="true">✦</span>
+          <span class="mob-nav-label">Dashboard</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-view="tasks" id="mob-nav-tasks" aria-label="My Tasks">
+          <span class="mob-nav-icon" aria-hidden="true">✧</span>
+          <span class="mob-nav-label">My Tasks</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-view="calendar" id="mob-nav-calendar" aria-label="Calendar">
+          <span class="mob-nav-icon" aria-hidden="true">📅</span>
+          <span class="mob-nav-label">Calendar</span>
+        </button>
+        <button type="button" class="mobile-nav-btn" data-view="settings" id="mob-nav-settings" aria-label="Settings">
+          <span class="mob-nav-icon" aria-hidden="true">⚙️</span>
+          <span class="mob-nav-label">Settings</span>
+        </button>
+      </nav>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
