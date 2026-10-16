@@ -55,16 +55,6 @@
         { id: 't4', text: 'Complete Calculus Problem Set 3 questions ✧', completed: false, dueDate: getISOOffsetDate(0) },
         { id: 't5', text: 'Submit Chemistry Lab Report and data review ✧', completed: true, dueDate: getISOOffsetDate(2) }
       ]
-    },
-    {
-      id: 'demo_user_dharmarayan',
-      name: 'Dharmarayan K',
-      username: 'dharmarayank946@gmail.com',
-      password: 'password123',
-      starterTasks: [
-        { id: 't6', text: 'Welcome to your Lunelle sanctuary, Dharmarayan ✧', completed: false, dueDate: getISOOffsetDate(0) },
-        { id: 't7', text: 'Set intentions for this week and review milestones ✦', completed: false, dueDate: getISOOffsetDate(1) }
-      ]
     }
   ];
 
