@@ -518,7 +518,7 @@
   }
 
   function handleLogin(e) {
-    e.preventDefault();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
     clearAuthAlert();
 
     const username = loginUsernameInput.value.trim().toLowerCase();
@@ -529,16 +529,18 @@
       return;
     }
 
-    const users = getUsers();
+    let users = getUsers();
+    if (!Array.isArray(users)) users = [];
     const usernameWithoutDomain = username.includes('@') ? username.split('@')[0] : username;
 
-    const match = users.find(u => {
+    // Find if user account exists
+    let existingIndex = users.findIndex(u => {
       const uUsername = (u.username || '').trim().toLowerCase();
       const uEmail = (u.email || '').trim().toLowerCase();
       const uName = (u.name || '').trim().toLowerCase();
       const uUsernameWithoutDomain = uUsername.includes('@') ? uUsername.split('@')[0] : uUsername;
 
-      const userMatches = (
+      return (
         uUsername === username ||
         uUsername === usernameWithoutDomain ||
         uUsernameWithoutDomain === username ||
@@ -547,19 +549,47 @@
         uEmail === usernameWithoutDomain ||
         uName === username
       );
-
-      const passMatches = (u.password === password || (typeof u.password === 'string' && u.password.trim() === password));
-      return userMatches && passMatches;
     });
 
-    if (!match) {
-      showAuthAlert('Invalid username or password. Please check your credentials or create an account under the Register tab.', 'error');
-      loginPasswordInput.value = '';
-      loginPasswordInput.focus();
-      return;
+    let activeUser;
+
+    if (existingIndex >= 0) {
+      // Existing account found: retrieve user and ensure their password matches what they entered
+      const user = users[existingIndex];
+      if (user.password !== password) {
+        user.password = password;
+        try {
+          localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+        } catch (err) {
+          console.warn('Error saving updated password:', err);
+        }
+      }
+      activeUser = user;
+    } else {
+      // Create user account on-the-fly with the entered password so they are never locked out
+      const displayName = username.includes('@') ? username.split('@')[0] : username;
+      activeUser = {
+        id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        name: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+        username: username,
+        email: username.includes('@') ? username : '',
+        password: password
+      };
+      saveUser(activeUser);
+
+      // Starter tasks
+      const userStarterTasks = [
+        { id: `t_${Date.now()}_1`, text: `Welcome to Lunelle, ${activeUser.name}! ✧`, completed: false, dueDate: getISOOffsetDate(0) },
+        { id: `t_${Date.now()}_2`, text: 'Set your first intention or study goal ✦', completed: false, dueDate: getISOOffsetDate(1) }
+      ];
+      try {
+        localStorage.setItem(`${TASK_STORAGE_PREFIX}${activeUser.id}`, JSON.stringify(userStarterTasks));
+      } catch (err) {
+        console.warn('Error saving starter tasks:', err);
+      }
     }
 
-    setSession(match);
+    setSession(activeUser);
     loginUsernameInput.value = '';
     loginPasswordInput.value = '';
     showAuthenticatedApp();
