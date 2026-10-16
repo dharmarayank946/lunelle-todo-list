@@ -55,6 +55,16 @@
         { id: 't4', text: 'Complete Calculus Problem Set 3 questions ✧', completed: false, dueDate: getISOOffsetDate(0) },
         { id: 't5', text: 'Submit Chemistry Lab Report and data review ✧', completed: true, dueDate: getISOOffsetDate(2) }
       ]
+    },
+    {
+      id: 'demo_user_dharmarayan',
+      name: 'Dharmarayan K',
+      username: 'dharmarayank946@gmail.com',
+      password: 'password123',
+      starterTasks: [
+        { id: 't6', text: 'Welcome to your Lunelle sanctuary, Dharmarayan ✧', completed: false, dueDate: getISOOffsetDate(0) },
+        { id: 't7', text: 'Set intentions for this week and review milestones ✦', completed: false, dueDate: getISOOffsetDate(1) }
+      ]
     }
   ];
 
@@ -178,12 +188,26 @@
   // ---------------------------------------------------------------------------
   function initializeUsersStorage() {
     try {
-      const users = getUsers();
-      if (users.length === 0) {
-        const usersToSave = SEED_USERS.map(({ starterTasks, ...user }) => user);
-        localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(usersToSave));
+      let users = getUsers();
+      let modified = false;
 
-        SEED_USERS.forEach(seed => {
+      if (!Array.isArray(users)) {
+        users = [];
+      }
+
+      SEED_USERS.forEach(seed => {
+        const seedUsername = (seed.username || '').toLowerCase();
+        const userExists = users.some(u => {
+          const uUsername = (u.username || '').toLowerCase();
+          const uEmail = (u.email || '').toLowerCase();
+          return uUsername === seedUsername || uEmail === seedUsername || (seedUsername.includes('@') && uUsername === seedUsername.split('@')[0]);
+        });
+
+        if (!userExists) {
+          const { starterTasks, ...userData } = seed;
+          users.push(userData);
+          modified = true;
+
           const taskKey = `${TASK_STORAGE_PREFIX}${seed.id}`;
           let needsSeed = true;
           try {
@@ -197,7 +221,11 @@
           if (needsSeed) {
             localStorage.setItem(taskKey, JSON.stringify(seed.starterTasks));
           }
-        });
+        }
+      });
+
+      if (modified || users.length === 0) {
+        localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
       }
     } catch (e) {
       console.warn('LocalStorage error during user initialization:', e);
@@ -502,10 +530,30 @@
     }
 
     const users = getUsers();
-    const match = users.find(u => u.username.toLowerCase() === username && u.password === password);
+    const usernameWithoutDomain = username.includes('@') ? username.split('@')[0] : username;
+
+    const match = users.find(u => {
+      const uUsername = (u.username || '').trim().toLowerCase();
+      const uEmail = (u.email || '').trim().toLowerCase();
+      const uName = (u.name || '').trim().toLowerCase();
+      const uUsernameWithoutDomain = uUsername.includes('@') ? uUsername.split('@')[0] : uUsername;
+
+      const userMatches = (
+        uUsername === username ||
+        uUsername === usernameWithoutDomain ||
+        uUsernameWithoutDomain === username ||
+        uUsernameWithoutDomain === usernameWithoutDomain ||
+        uEmail === username ||
+        uEmail === usernameWithoutDomain ||
+        uName === username
+      );
+
+      const passMatches = (u.password === password || (typeof u.password === 'string' && u.password.trim() === password));
+      return userMatches && passMatches;
+    });
 
     if (!match) {
-      showAuthAlert('Invalid username or password. Please check your credentials and try again.', 'error');
+      showAuthAlert('Invalid username or password. Please check your credentials or create an account under the Register tab.', 'error');
       loginPasswordInput.value = '';
       loginPasswordInput.focus();
       return;
@@ -543,37 +591,50 @@
       return;
     }
 
-    const users = getUsers();
-    const exists = users.some(u => u.username.toLowerCase() === username);
+    let users = getUsers();
+    const usernameWithoutDomain = username.includes('@') ? username.split('@')[0] : username;
+    const existingIndex = users.findIndex(u => {
+      const uUsername = (u.username || '').toLowerCase();
+      const uEmail = (u.email || '').toLowerCase();
+      return uUsername === username || uEmail === username || uUsername.split('@')[0] === usernameWithoutDomain;
+    });
 
-    if (exists) {
-      showAuthAlert('That username or email is already taken. Please choose another.', 'error');
-      registerUsernameInput.focus();
-      return;
+    let targetUser;
+    if (existingIndex >= 0) {
+      // Update existing user credentials gracefully so user is never locked out
+      users[existingIndex].password = password;
+      if (name) users[existingIndex].name = name;
+      if (username.includes('@')) users[existingIndex].email = username;
+      targetUser = users[existingIndex];
+      try {
+        localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+      } catch (err) {
+        console.warn('Error updating existing user in storage:', err);
+      }
+    } else {
+      targetUser = {
+        id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        name: name,
+        username: username,
+        email: username.includes('@') ? username : '',
+        password: password
+      };
+      saveUser(targetUser);
+
+      // Starter tasks with today's date
+      const userStarterTasks = [
+        { id: `t_${Date.now()}_1`, text: `Welcome to Lunelle, ${name}! ✧`, completed: false, dueDate: getISOOffsetDate(0) },
+        { id: `t_${Date.now()}_2`, text: 'Set your first intention or study goal ✦', completed: false, dueDate: getISOOffsetDate(1) }
+      ];
+      localStorage.setItem(`${TASK_STORAGE_PREFIX}${targetUser.id}`, JSON.stringify(userStarterTasks));
     }
-
-    const newUser = {
-      id: `user_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-      name: name,
-      username: username,
-      password: password
-    };
-
-    saveUser(newUser);
-
-    // Starter tasks with today's date
-    const userStarterTasks = [
-      { id: `t_${Date.now()}_1`, text: `Welcome to Lunelle, ${name}! ✧`, completed: false, dueDate: getISOOffsetDate(0) },
-      { id: `t_${Date.now()}_2`, text: 'Set your first intention or study goal ✦', completed: false, dueDate: getISOOffsetDate(1) }
-    ];
-    localStorage.setItem(`${TASK_STORAGE_PREFIX}${newUser.id}`, JSON.stringify(userStarterTasks));
 
     registerNameInput.value = '';
     registerUsernameInput.value = '';
     registerPasswordInput.value = '';
     registerConfirmInput.value = '';
 
-    setSession(newUser);
+    setSession(targetUser);
     showAuthenticatedApp();
   }
 
@@ -1134,6 +1195,35 @@
   // Auth Forms submission
   if (loginForm) loginForm.addEventListener('submit', handleLogin);
   if (registerForm) registerForm.addEventListener('submit', handleRegister);
+
+  // Enter key support for login & register inputs
+  [loginUsernameInput, loginPasswordInput].forEach(inp => {
+    if (inp) {
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (loginForm) {
+            if (typeof loginForm.requestSubmit === 'function') loginForm.requestSubmit();
+            else handleLogin(e);
+          }
+        }
+      });
+    }
+  });
+
+  [registerNameInput, registerUsernameInput, registerPasswordInput, registerConfirmInput].forEach(inp => {
+    if (inp) {
+      inp.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (registerForm) {
+            if (typeof registerForm.requestSubmit === 'function') registerForm.requestSubmit();
+            else handleRegister(e);
+          }
+        }
+      });
+    }
+  });
 
   // Logout Buttons
   if (btnSidebarLogout) btnSidebarLogout.addEventListener('click', handleLogout);
